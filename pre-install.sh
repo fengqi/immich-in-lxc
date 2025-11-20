@@ -198,7 +198,9 @@ install_postgresql () {
     runuser -u postgres -- psql -c 'CREATE EXTENSION IF NOT EXISTS vchord CASCADE'
 }
 
-install_postgresql
+if [ $isPGSQL = true ]; then
+    install_postgresql
+fi
 
 # -------------------
 # Clone the base images repo
