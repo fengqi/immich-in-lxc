@@ -9,7 +9,7 @@ SCRIPT_DIR=$PWD
 
 copy_service_files () {
     # Remove deprecated service
-    rm -f /etc/systemd/system/immich-microservices.service
+    rm -rf /etc/systemd/system/immich-microservices.service
     # Copy new services
     cp --update=none immich-ml.service /etc/systemd/system/
     cp --update=none immich-web.service /etc/systemd/system/
