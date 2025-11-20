@@ -11,6 +11,10 @@ Group=immich
 Type=simple
 Restart=on-failure
 UMask=0077
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+Environment="IMMICH_HOST=0.0.0.0"
+Environment="IMMICH_PORT=80"
 
 ExecStart=/bin/bash /home/immich/app/start.sh
 
