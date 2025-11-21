@@ -98,6 +98,11 @@ install_node () {
         npm install -g pnpm
     fi
 
+    if ! command -v mise &> /dev/null; then
+        echo "Installing @jdxcode/mise"
+        npm install -g @jdxcode/mise
+    fi
+
     echo "npm version: {$(npm -v)}"
     echo "node version: {$(node -v)}"
     echo "pnpm version: {$(pnpm -v)}"
@@ -335,6 +340,18 @@ install_immich_web_server_pnpm () {
     cp -a LICENSE $INSTALL_DIR_app/
     cp -a i18n $INSTALL_DIR/
     cp -a server/bin/get-cpus.sh server/bin/start.sh $INSTALL_DIR_app/
+
+    if [ -d "plugins" ]; then
+        cd plugins
+        mise trust --all --yes
+        mise build --yes
+        cd $INSTALL_DIR_src
+        mkdir -p $INSTALL_DIR_app/corePlugin
+        cp -a ./plugins/dist "$INSTALL_DIR_app/corePlugin/dist"
+        cp -a ./plugins/manifest.json "$INSTALL_DIR_app/corePlugin/manifest.json"
+    else
+        echo "plugins directory not found — skipping plugin build."
+    fi
 
     # Unset mirror for pnpm (if it was set)
     if [ ! -z "${PROXY_NPM}" ]; then
