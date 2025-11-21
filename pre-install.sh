@@ -17,6 +17,20 @@ LD_LIBRARY_PATH=/usr/local/lib # :$LD_LIBRARY_PATH
 LD_RUN_PATH=/usr/local/lib # :$LD_RUN_PATH
 
 # -------------------
+# Load environment variables from env file
+# -------------------
+
+load_environment_variables () {
+    # Read the .env file into variables
+    cd $SCRIPT_DIR
+    set -a
+    . ./.env
+    set +a
+}
+
+load_environment_variables
+
+# -------------------
 # Git clone function
 # -------------------
 
