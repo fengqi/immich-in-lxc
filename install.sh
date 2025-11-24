@@ -106,6 +106,8 @@ install_node () {
     echo "npm version: {$(npm -v)}"
     echo "node version: {$(node -v)}"
     echo "pnpm version: {$(pnpm -v)}"
+
+    npm install --global corepack@latest && corepack enable pnpm
 }
 
 install_node
@@ -320,16 +322,19 @@ install_immich_web_server_pnpm () {
     pnpm install --frozen-lockfile
     npm_config_sharp_binary_host="" SHARP_FORCE_GLOBAL_LIBVIPS=true pnpm install
 
-    SHARP_IGNORE_GLOBAL_LIBVIPS=true pnpm --filter immich --frozen-lockfile build
     # Build and deploy the server component.
+    SHARP_IGNORE_GLOBAL_LIBVIPS=true pnpm --filter immich --frozen-lockfile build && \
     SHARP_FORCE_GLOBAL_LIBVIPS=true pnpm --filter immich --frozen-lockfile --prod --no-optional deploy $INSTALL_DIR_app
+    echo 'SERVER'
+
+    SHARP_IGNORE_GLOBAL_LIBVIPS=true pnpm --filter @immich/sdk --filter immich-web --frozen-lockfile --force install && \
+    pnpm --filter @immich/sdk --filter immich-web build
     echo 'WEB'
 
     # Build and deploy the CLI.
-    pnpm --filter @immich/sdk --filter @immich/cli --frozen-lockfile install && \
-             pnpm --filter @immich/sdk --filter @immich/cli build && \
-               pnpm --filter @immich/cli --prod --no-optional deploy $INSTALL_DIR_app/cli
-    #pnpm --filter @immich/cli --frozen-lockfile --prod --no-optional deploy $INSTALL_DIR_app/cli
+    SHARP_IGNORE_GLOBAL_LIBVIPS=true pnpm --filter @immich/sdk --filter @immich/cli --frozen-lockfile install && \
+    pnpm --filter @immich/sdk --filter @immich/cli build && \
+    pnpm --filter @immich/cli --prod --no-optional deploy $INSTALL_DIR_app/cli
     echo 'CLI'
 
     ln -s ../cli/bin/immich $INSTALL_DIR_app/bin/immich
